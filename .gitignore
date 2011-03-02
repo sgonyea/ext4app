@@ -3,4 +3,6 @@ db/*.sqlite3
 log/*.log
 tmp/
 vendor/bundle
-public/javascripts/ext-4.0-pr1
+public/javascripts/ext-*
+public/stylesheets/ext-*
+test
