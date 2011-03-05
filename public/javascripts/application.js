@@ -1,9 +1,3 @@
-// Ext.js 4 PR1 WORKAROUND
-//Ext.data.Model.override({
-//    getProxy: function(){
-//        return this.self.proxy;
-//    }
-//});
 Ext.regModel('Ext4app.User', {
     fields: [
         {name: 'id', type: 'int'},
@@ -22,6 +16,6 @@ Ext.regModel('Ext4app.User', {
             record: 'user',
             totalProperty: 'total',
             successProperty: 'success'
-        },
+        }
     }
-})
+});
