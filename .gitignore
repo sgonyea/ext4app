@@ -6,3 +6,4 @@ vendor/bundle
 public/javascripts/ext-*
 public/stylesheets/ext-*
 test
+.idea
