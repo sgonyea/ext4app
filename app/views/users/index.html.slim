@@ -1,4 +1,4 @@
-<script type="text/javascript" charset="utf-8">
+javascript:
   Ext.require('Ext4app.stores.UserStore');
   Ext.onReady(function() {
     new Ext4app.stores.UserStore({
@@ -6,7 +6,7 @@
       storeId: 'ext4app.users',
       autoLoad: true
     });
-    new Ext.container.Viewport({
+    var v = new Ext.container.Viewport({
       layout: 'border',
       items: [{
         region: 'center',
@@ -29,4 +29,3 @@
       }]
     });
   });
-</script>

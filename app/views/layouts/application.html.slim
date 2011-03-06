@@ -1,0 +1,9 @@
+! doctype html
+html
+  head
+    title Slim Ext4app
+    = stylesheet_link_tag :defaults, 'scaffold'
+    = javascript_include_tag :defaults
+    = csrf_meta_tag
+  body
+    = yield
