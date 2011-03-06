@@ -1,28 +1,32 @@
 <script type="text/javascript" charset="utf-8">
-  Ext.require('Ext4app.widgets.UserGrid');
+  Ext.require('Ext4app.stores.UserStore');
   Ext.onReady(function() {
-    var userPanel = new Ext.panel.Panel({
-      renderTo: 'users-list',
-      title: 'Listing Users',
-      items: [
-        {
-          xtype: 'usergrid',
-          columnLines: true,
-          width: 420,
-          height: 640,
-          viewConfig: {
-            stripeRows: true
-          }
-        }
-      ]
+    new Ext4app.stores.UserStore({
+      pageSize: 30,
+      storeId: 'ext4app.users',
+      autoLoad: true
+    });
+    new Ext.container.Viewport({
+      layout: 'border',
+      items: [{
+        region: 'center',
+        xtype: 'grid',
+        store: Ext.data.StoreMgr.get('ext4app.users'),
+        title: 'Listing Users',
+        headers: [
+          {text: 'Name', dataIndex: 'name', width: 380, sortable: true},
+          {text: 'Age', dataIndex: 'age', width: 40, align: 'right', sortable: true}
+        ],
+        split: false,
+        columnLines: true,
+        viewConfig: { stripeRows: true }
+      }, {
+        region: 'south',
+        xtype: 'pagingtoolbar',
+        store: Ext.data.StoreMgr.get('ext4app.users'),
+        displayInfo: true,
+        prependButtons: true
+      }]
     });
   });
 </script>
-
-<div id="users-list"></div>
-
-<%#= link_to 'Show', user %>
-<%#= link_to 'Edit', edit_user_path(user) %>
-<%#= link_to 'Destroy', user, :confirm => 'Are you sure?', :method => :delete %>
-
-<%#= link_to 'New User', new_user_path %>
