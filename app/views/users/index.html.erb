@@ -6,7 +6,7 @@
         config = config || {};
         config.model = 'Ext4app.User';
         config.remoteSort = true;
-        Ext4app.UserStore.superclass.constructor.call(this, config);
+        this.callParent([config]);
       }
     });
 
@@ -31,7 +31,7 @@
             prependButtons: true
           })
         ];
-        Ext4app.UserGrid.superclass.initComponent.call(this);
+        this.callParent();
       }
     });
   }, false);
