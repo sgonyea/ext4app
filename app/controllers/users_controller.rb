@@ -1,18 +1,15 @@
 class UsersController < ApplicationController
 
-  respond_to :json, :html
+  respond_to :json
 
-  # GET /users
-  # GET /users.xml
+  # GET /users.json
   def index
     respond_to do |format|
-      format.html # index.html.erb
-
-      format.json {
+      format.json do
         order = (params[:sort] ? JSON.parse(params[:sort]) : []).map{|sort|'%{property} %{direction}' % sort.symbolize_keys}
         users = User.order(order).offset(params[:start]).limit(params[:limit])
         respond_with(users: users, total: User.count, success: true)
-      }
+      end
     end
   end
 
