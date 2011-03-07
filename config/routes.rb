@@ -1,4 +1,6 @@
 Ext4app::Application.routes.draw do
+  root to: 'welcome#index'
+
   resources :users
 
   # The priority is based upon order of creation:
