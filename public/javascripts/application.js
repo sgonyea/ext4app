@@ -5,16 +5,7 @@ Ext.Loader.setConfig({
     }
 });
 
-Ext.define('Ext.rails.RestProxy', {
-    extend: 'Ext.data.RestProxy',
-    alias: 'proxy.railsrest',
-    buildRequest: function(operation) {
-        var request = this.callParent([operation]);
-        if (operation.action != 'read') {
-            Ext.applyIf(request.params, this.csrfParams());
-        }
-        return request;
-    },
+Ext.define('Ext.rails.ForgeryProtection', {
     csrfParams: function() {
         var params = {};
         var metaCsrfParam = Ext.select('meta[name=csrf-param]').item(0);
@@ -27,5 +18,20 @@ Ext.define('Ext.rails.RestProxy', {
             }
         }
         return params;
+    }
+});
+
+Ext.define('Ext.rails.RestProxy', {
+    extend: 'Ext.data.RestProxy',
+    mixins: {
+        forgeryProtection: 'Ext.rails.ForgeryProtection'
+    },
+    alias: 'proxy.railsrest',
+    buildRequest: function(operation) {
+        var request = this.callParent([operation]);
+        if (operation.action != 'read') {
+            Ext.applyIf(request.params, this.csrfParams());
+        }
+        return request;
     }
 });
