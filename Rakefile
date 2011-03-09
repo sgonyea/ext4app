@@ -4,4 +4,5 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
+Ext4app::Application.send(:include, Rake::DSL)
 Ext4app::Application.load_tasks
