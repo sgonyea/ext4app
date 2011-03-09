@@ -7,7 +7,7 @@ Ext.regModel('Ext4app.models.User', {
         'updated_at'
     ],
     proxy: {
-        type: 'rest',
+        type: 'railsrest',
         url: 'users',
         format: 'json',
         reader: {
