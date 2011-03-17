@@ -39,13 +39,13 @@ class UsersController < ApplicationController
 
   # PUT /users/1.json
   def update
-    @user = User.find(params[:id])
+    user = User.find(params[:id])
     respond_to do |format|
-      if @user.update_attributes(params[:user])
-        format.json  { render :json => { users: [@user], success: true } }
+      if user.update_attributes(params[:user])
+        format.json  { render :json => { users: [user], success: true } }
 #head :ok }
       else
-        format.json  { render :json => @user.errors, :status => :unprocessable_entity }
+        format.json  { render :json => user.errors, :status => :unprocessable_entity }
       end
     end
   end
