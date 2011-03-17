@@ -6,16 +6,20 @@ Ext.Loader.setConfig({
 });
 
 Ext.define('Ext.rails.ForgeryProtection', {
+	csrfParam: function() {
+        var meta = Ext.select('meta[name=csrf-param]').item(0);
+		return meta == undefined ? undefined : meta.getAttribute('content');
+	},
+	csrfToken: function() {
+        var meta = Ext.select('meta[name=csrf-token]').item(0);
+		return meta == undefined ? undefined : meta.getAttribute('content');
+	},
     csrfParams: function() {
         var params = {};
-        var metaCsrfParam = Ext.select('meta[name=csrf-param]').item(0);
-        var metaCsrfToken = Ext.select('meta[name=csrf-token]').item(0);
-        if (metaCsrfParam != undefined && metaCsrfToken != undefined) {
-            var name = metaCsrfParam.getAttribute('content');
-            var value = metaCsrfToken.getAttribute('content');
-            if (name != undefined && value != undefined) {
-                params[name] = value;
-            }
+		var name = this.csrfParam();
+		var value = this.csrfToken();
+        if (name != undefined && value != undefined) {
+            params[name] = value;
         }
         return params;
     }
@@ -29,8 +33,9 @@ Ext.define('Ext.rails.RestProxy', {
     alias: 'proxy.railsrest',
     buildRequest: function(operation) {
         var request = this.callParent([operation]);
-        if (operation.action != 'read') {
-            Ext.applyIf(request.params, this.csrfParams());
+        if (operation.allowWrite()) {
+			request.jsonData = request.jsonData || {};
+			Ext.applyIf(request.jsonData, this.csrfParams());
         }
         return request;
     }
