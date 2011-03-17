@@ -25,35 +25,36 @@ Ext.define('Ext.rails.ForgeryProtection', {
     }
 });
 
-Ext.define('Ext.rails.JsonWriter', {
-    extend: 'Ext.data.JsonWriter',
-    mixins: {
-        forgeryProtection: 'Ext.rails.ForgeryProtection'
-    },
-    alias: 'writer.railsjson',
+Ext.define('Ext.rails.AttributeProtection', {
 	sensibleParams: [
 		'id', 'updated_at', 'updated_on', 'created_at', 'created_on'
 	],
 	removeSensibleParams: function(data) {
-		var clone = {};
-		Ext.apply(clone, this.root ? data[this.root] : data);
+		var clone = Ext.clone(data);
 		Ext.each(this.sensibleParams, function(param) {
 			delete clone[param];
 		}, this);
-		if (this.root) {
-			result = {};
-			result[this.root] = clone;
-			return result;
-		} else {
-			return clone;
-		}
+		return clone;
 	},
+});
+
+Ext.define('Ext.rails.JsonWriter', {
+    extend: 'Ext.data.JsonWriter',
+    mixins: {
+        forgeryProtection: 'Ext.rails.ForgeryProtection',
+		attributeProtection: 'Ext.rails.AttributeProtection'
+    },
+    alias: 'writer.railsjson',
 	writeRecords: function(request, data) {
 		request = this.callParent([request, data]);
 		// add CSRF token
 		Ext.applyIf(request.jsonData, this.csrfParams());
 		// remove sensible parameters.
-		request.jsonData = this.removeSensibleParams(request.jsonData);
-        return request;
+		if (this.root) {
+			request.jsonData[this.root] = this.removeSensibleParams(request.jsonData[this.root]);
+		} else {
+			request.jsonData = this.removeSensibleParams(request.jsonData);
+		}
+		return request;
     }
 });
