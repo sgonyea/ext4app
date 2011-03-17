@@ -39,9 +39,9 @@ class UsersController < ApplicationController
 
   # PUT /users/1.json
   def update
-    @user = User.find(params[:records][0][:id])
+    @user = User.find(params[:id])
     respond_to do |format|
-      if @user.update_attributes(params[:records][0])
+      if @user.update_attributes(params[:user])
         format.json  { render :json => { users: [@user], success: true } }
 #head :ok }
       else
