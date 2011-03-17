@@ -52,11 +52,11 @@ class UsersController < ApplicationController
 
   # DELETE /users/1.json
   def destroy
-    @user = User.find(params[:records][0][:id])
-    @user.destroy
+    user = User.find(params[:id])
+    user.destroy
 
     respond_to do |format|
-      format.json  { render :json => { users:[@user], success: true } }
+      format.json  { render :json => { users: [user], success: true } }
     end
   end
 
