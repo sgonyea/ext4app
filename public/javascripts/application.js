@@ -25,18 +25,35 @@ Ext.define('Ext.rails.ForgeryProtection', {
     }
 });
 
-Ext.define('Ext.rails.RestProxy', {
-    extend: 'Ext.data.RestProxy',
+Ext.define('Ext.rails.JsonWriter', {
+    extend: 'Ext.data.JsonWriter',
     mixins: {
         forgeryProtection: 'Ext.rails.ForgeryProtection'
     },
-    alias: 'proxy.railsrest',
-    buildRequest: function(operation) {
-        var request = this.callParent([operation]);
-        if (operation.allowWrite()) {
-			request.jsonData = request.jsonData || {};
-			Ext.applyIf(request.jsonData, this.csrfParams());
-        }
+    alias: 'writer.railsjson',
+	sensibleParams: [
+		'id', 'updated_at', 'updated_on', 'created_at', 'created_on'
+	],
+	removeSensibleParams: function(data) {
+		var clone = {};
+		Ext.apply(clone, this.root ? data[this.root] : data);
+		Ext.each(this.sensibleParams, function(param) {
+			delete clone[param];
+		}, this);
+		if (this.root) {
+			result = {};
+			result[this.root] = clone;
+			return result;
+		} else {
+			return clone;
+		}
+	},
+	writeRecords: function(request, data) {
+		request = this.callParent([request, data]);
+		// add CSRF token
+		Ext.applyIf(request.jsonData, this.csrfParams());
+		// remove sensible parameters.
+		request.jsonData = this.removeSensibleParams(request.jsonData);
         return request;
     }
 });

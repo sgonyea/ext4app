@@ -2,12 +2,10 @@ Ext.regModel('Ext4app.models.User', {
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
-        {name: 'age', type: 'int'},
-        'created_at',
-        'updated_at'
+        {name: 'age', type: 'int'}
     ],
     proxy: {
-        type: 'railsrest',
+        type: 'rest',
         url: 'users',
         format: 'json',
         reader: {
@@ -18,7 +16,7 @@ Ext.regModel('Ext4app.models.User', {
             successProperty: 'success'
         },
         writer: {
-            type: 'json',
+            type: 'railsjson',
             root: 'user',
 	    }
     }
