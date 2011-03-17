@@ -1,3 +1,4 @@
+Ext.require('Rails.RestProxy');
 Ext.regModel('Ext4app.models.User', {
     fields: [
         {name: 'id', type: 'int'},
@@ -5,19 +6,7 @@ Ext.regModel('Ext4app.models.User', {
         {name: 'age', type: 'int'}
     ],
     proxy: {
-        type: 'rest',
-        url: 'users',
-        format: 'json',
-        reader: {
-            type: 'json',
-            root: 'users',
-            record: 'user',
-            totalProperty: 'total',
-            successProperty: 'success'
-        },
-        writer: {
-            type: 'railsjson',
-            root: 'user'
-	    }
+        type: 'railsrest',
+        url: 'users'
     }
 });

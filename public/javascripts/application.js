@@ -1,11 +1,24 @@
 Ext.Loader.setConfig({
     enabled: true,
     paths: {
-        'Ext4app': '/javascripts/Ext4app'
+        Ext4app: '/javascripts/Ext4app'
     }
 });
 
-Ext.define('Ext.rails.ForgeryProtection', {
+Ext.define('Rails.AttributeProtection', {
+	sensibleParams: [
+		'id', 'updated_at', 'updated_on', 'created_at', 'created_on'
+	],
+	removeSensibleParams: function(data) {
+		var clone = Ext.clone(data);
+		Ext.each(this.sensibleParams, function(param) {
+			delete clone[param];
+		}, this);
+		return clone;
+	},
+});
+
+Ext.define('Rails.ForgeryProtection', {
 	csrfParam: function() {
         var meta = Ext.select('meta[name=csrf-param]').item(0);
 		return meta == undefined ? undefined : meta.getAttribute('content');
@@ -25,24 +38,12 @@ Ext.define('Ext.rails.ForgeryProtection', {
     }
 });
 
-Ext.define('Ext.rails.AttributeProtection', {
-	sensibleParams: [
-		'id', 'updated_at', 'updated_on', 'created_at', 'created_on'
-	],
-	removeSensibleParams: function(data) {
-		var clone = Ext.clone(data);
-		Ext.each(this.sensibleParams, function(param) {
-			delete clone[param];
-		}, this);
-		return clone;
-	},
-});
-
-Ext.define('Ext.rails.JsonWriter', {
+Ext.define('Rails.JsonWriter', {
     extend: 'Ext.data.JsonWriter',
+	requires: [ 'Rails.ForgeryProtection', 'Rails.AttributeProtection' ],
     mixins: {
-        forgeryProtection: 'Ext.rails.ForgeryProtection',
-		attributeProtection: 'Ext.rails.AttributeProtection'
+        forgeryProtection: 'Rails.ForgeryProtection',
+		attributeProtection: 'Rails.AttributeProtection'
     },
     alias: 'writer.railsjson',
 	writeRecords: function(request, data) {
@@ -57,4 +58,30 @@ Ext.define('Ext.rails.JsonWriter', {
 		}
 		return request;
     }
+});
+
+Ext.define('Rails.RestProxy', {
+	extend: 'Ext.data.RestProxy',
+	requires: [ 'Rails.JsonWriter' ],
+	alias: 'proxy.railsrest',
+	constructor: function(config) {
+		config = config || {};
+		var rootName = config.root || config.url;
+		var recordName = config.record || Ext.util.Inflector.singularize(rootName);
+		Ext.applyIf(config, {
+			format: 'json',
+			reader: {
+				type: 'json',
+				root: rootName,
+				record: recordName,
+				totalProperty: config.totalProperty || 'total',
+				successProperty: config.successProperty || 'success'
+			},
+			writer: {
+				type: 'railsjson',
+				root: recordName
+			}
+		});
+		this.callParent([config]);
+	}
 });
