@@ -5,6 +5,8 @@ Ext.Loader.setConfig({
     }
 });
 
+var Rails = {};
+
 Ext.define('Rails.AttributeProtection', {
 	sensibleParams: [
 		'id', 'updated_at', 'updated_on', 'created_at', 'created_on'
@@ -83,5 +85,20 @@ Ext.define('Rails.RestProxy', {
 			}
 		});
 		this.callParent([config]);
+	}
+});
+
+Ext.require('Rails.RestProxy');
+
+Ext.apply(Rails, {
+	regModel: function(name, config) {
+		config = config || {};
+		Ext.applyIf(config, {
+		    proxy: {
+		        type: 'railsrest',
+		        url: config.url
+		    }
+		});
+		return Ext.regModel(name, config);
 	}
 });
