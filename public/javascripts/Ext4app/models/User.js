@@ -16,6 +16,10 @@ Ext.regModel('Ext4app.models.User', {
             record: 'user',
             totalProperty: 'total',
             successProperty: 'success'
-        }
+        },
+        writer: {
+            type: 'json',
+            root: 'user',
+	    }
     }
 });
