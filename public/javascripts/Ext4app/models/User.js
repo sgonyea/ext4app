@@ -17,7 +17,7 @@ Ext.regModel('Ext4app.models.User', {
         },
         writer: {
             type: 'railsjson',
-            root: 'user',
+            root: 'user'
 	    }
     }
 });
