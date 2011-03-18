@@ -57,17 +57,16 @@ Ext.define('Rails.data.JsonWriter', {
 		attributeProtection: 'Rails.data.AttributeProtection'
     },
     alias: 'writer.railsjson',
-	writeRecords: function(request, data) {
-		request = this.callParent([request, data]);
+	write: function(request) {
+		request = this.callParent([request]);
 		// add CSRF token
 		Ext.applyIf(request.jsonData, this.csrfParams());
-		// remove sensible parameters.
-		if (this.root) {
-			request.jsonData[this.root] = this.removeSensibleParams(request.jsonData[this.root]);
-		} else {
-			request.jsonData = this.removeSensibleParams(request.jsonData);
-		}
 		return request;
+	},
+	writeRecords: function(request, data) {
+		// remove sensible parameters.
+		data = this.removeSensibleParams(data);
+		return this.callParent([request, data]);
     }
 });
 
