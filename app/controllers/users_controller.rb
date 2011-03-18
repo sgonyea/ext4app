@@ -16,23 +16,23 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
+    user = User.find(params[:id])
 
     respond_to do |format|
-      format.json  { render :json => @user }
+      format.json  { render :json => {users: [user], success: true} }
     end
   end
 
   # POST /users
   # POST /users.xml
   def create
-    @user = User.new(params[:user])
+    user = User.new(params[:user])
 
     respond_to do |format|
-      if @user.save
-        format.json  { render :json => @user, :status => :created, :location => @user }
+      if user.save
+        format.json  { render :json => {users: [user], success: true}, :status => :created, :location => user }
       else
-        format.json  { render :json => @user.errors, :status => :unprocessable_entity }
+        format.json  { render :json => user.errors, :status => :unprocessable_entity }
       end
     end
   end
@@ -43,7 +43,6 @@ class UsersController < ApplicationController
     respond_to do |format|
       if user.update_attributes(params[:user])
         format.json  { render :json => { users: [user], success: true } }
-#head :ok }
       else
         format.json  { render :json => user.errors, :status => :unprocessable_entity }
       end
