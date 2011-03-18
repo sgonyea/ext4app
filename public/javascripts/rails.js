@@ -6,12 +6,14 @@ var Rails = {};
 
 Ext.apply(Rails, {
 	regModel: function(name, config) {
+		var baseName = name.split('.').pop();
 		config = config || {};
+		config.proxy = config.proxy || {};
+		Ext.applyIf(config.proxy, {
+	        type: 'railsrest',
+			url: '/' + Ext.util.Inflector.pluralize(baseName.toLowerCase())
+		});
 		Ext.applyIf(config, {
-		    proxy: {
-		        type: 'railsrest',
-		        url: config.url 
-		    }
 		});
 		return Ext.regModel(name, config);
 	}
@@ -76,20 +78,25 @@ Ext.define('Rails.data.RestProxy', {
 	constructor: function(config) {
 		config = config || {};
 		var rootName = config.root || config.url;
+		if (rootName != undefined) {
+			rootName = rootName.replace(/^\/+/, '');
+		}
 		var recordName = config.record || Ext.util.Inflector.singularize(rootName);
+		config.reader = config.reader || {};
+		Ext.applyIf(config.reader, {
+			type: 'json',
+			root: rootName,
+			record: recordName,
+			totalProperty: 'total',
+			successProperty: 'success'
+		});
+		config.writer = config.writer || {};
+		Ext.applyIf(config.writer, {
+			type: 'railsjson',
+			root: recordName
+		});
 		Ext.applyIf(config, {
-			format: 'json',
-			reader: {
-				type: 'json',
-				root: rootName,
-				record: recordName,
-				totalProperty: config.totalProperty || 'total',
-				successProperty: config.successProperty || 'success'
-			},
-			writer: {
-				type: 'railsjson',
-				root: recordName
-			}
+			format: 'json'
 		});
 		this.callParent([config]);
 	}

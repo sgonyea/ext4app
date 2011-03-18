@@ -4,5 +4,7 @@ Rails.regModel('Ext4app.models.User', {
         {name: 'name', type: 'string'},
         {name: 'age', type: 'int'}
     ],
-	url: 'users'
+	proxy: {
+		url: '/users'
+	}
 });
