@@ -83,7 +83,7 @@ Ext.define('Rails.data.RestConvention', function() {
 
 	function urlToName(url) {
 		if (url == undefined) {
-			raise 'URL must be defined';
+			throw 'URL must be defined';
 		}
 		return url.replace(/^\//, '');
 	}
