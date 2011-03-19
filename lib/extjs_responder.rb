@@ -1,3 +1,4 @@
+# Always respond with record(s) in interest.
 class ExtjsResponder < ActionController::Responder
 
   def api_behavior(error)
@@ -12,13 +13,13 @@ class ExtjsResponder < ActionController::Responder
     case
     when post?
       if has_errors?
-        options.merge!(:status => :unprocessable_entity)
+        options.merge!(status: :unprocessable_entity)
       else
-        options.merge!(:status => :created, :location => api_location)
+        options.merge!(status: :created, location: api_location)
       end
     when put?
       if has_errors?
-        options.merge!(:status => :unprocessable_entity)
+        options.merge!(status: :unprocessable_entity)
       end
     end
 
@@ -32,15 +33,19 @@ class ExtjsResponder < ActionController::Responder
   end
 
   def root
-    resource_class.name.downcase.pluralize
+    resource_class.name.downcase.pluralize.to_sym
   end
 
   def ext_data
+    result = { success: true, errors: [] }
     if resource.respond_to?(:to_a)
-      { root => resource, :total => resource_class.count, :success => !has_errors? }
+      result.merge!(root => resource)
+      result.merge!(total: resource_class.count)
     else
-      { root => [resource], :success => !has_errors? }
+      result.merge!(success: false, errors: resource.errors.full_messages) if has_errors?
+      result[root] = [resource]
     end
+    result
   end
 
   def valid_method?
