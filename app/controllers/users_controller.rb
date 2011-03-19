@@ -1,69 +1,41 @@
+require 'extjs_responder'
+
 class UsersController < ApplicationController
 
   respond_to :json
+  self.responder = ExtjsResponder
 
   # GET /users.json
   def index
-    respond_to do |format|
-      format.json do
-        order = (params[:sort] ? JSON.parse(params[:sort]) : []).map{|sort|'%{property} %{direction}' % sort.symbolize_keys}
-        users = User.order(order).offset(params[:start]).limit(params[:limit])
-        respond_with(users: users, total: User.count, success: true)
-      end
-    end
+    order = (params[:sort] ? JSON.parse(params[:sort]) : []).map{|sort|'%{property} %{direction}' % sort.symbolize_keys}
+    users = User.order(order).offset(params[:start]).limit(params[:limit])
+    respond_with(users)
   end
 
-  # GET /users/1
-  # GET /users/1.xml
+  # GET /users/1.json
   def show
     user = User.find(params[:id])
-
-    respond_to do |format|
-      format.json  { render :json => {users: [user], success: true} }
-    end
+    respond_with(user)
   end
 
-  # POST /users
-  # POST /users.xml
+  # POST /users.json
   def create
     user = User.new(params[:user])
-
-    respond_to do |format|
-      if user.save
-        format.json  { render :json => {users: [user], success: true}, :status => :created, :location => user }
-      else
-        format.json  { render :json => user.errors, :status => :unprocessable_entity }
-      end
-    end
+    user.save
+    respond_with(user)
   end
 
   # PUT /users/1.json
   def update
     user = User.find(params[:id])
-    respond_to do |format|
-      if user.update_attributes(params[:user])
-        format.json  { render :json => { users: [user], success: true } }
-      else
-        format.json  { render :json => user.errors, :status => :unprocessable_entity }
-      end
-    end
+    user.update_attributes(params[:user])
+    respond_with(user)
   end
 
   # DELETE /users/1.json
   def destroy
     user = User.find(params[:id])
     user.destroy
-
-    respond_to do |format|
-      format.json  { render :json => { users: [user], success: true } }
-    end
+    respond_with(user)
   end
-
-  private
-
-  def dump_response
-    $stderr.puts(response.body)
-  end
-#  after_filter :dump_response
-
 end
