@@ -1,7 +1,7 @@
 Ext4app::Application.routes.draw do
   root to: 'welcome#index'
 
-  resources :users
+  resources :users, only: %w(index show create update destroy)
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
