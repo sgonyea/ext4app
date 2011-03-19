@@ -96,21 +96,28 @@ Ext.define('Rails.data.RestConvention', function() {
 		return config.record || Ext.util.Inflector.singularize(rootName(config));
 	}
 
+	function defaultReaderConfig(config) {
+		return {
+			root: rootName(config),
+			record: recordName(config)
+		};
+	}
+
+	function defaultWriterConfig(config) {
+		return {
+			root: recordName(config)
+		};
+	}
+
 	return {
-		defaultReaderConfig: function(config) {
-			return {
-				type: 'json',
-				root: rootName(config),
-				record: recordName(config),
-				totalProperty: 'total',
-				successProperty: 'success'
-			};
-		},
-		defaultWriterConfig: function(config) {
-			return {
-				type: 'json',
-				root: recordName(config)
-			};
+		applyRailsConvention: function(config) {
+			config = config || {};
+			Ext.applyIf(config, { format: 'json' });
+			config.reader = config.reader || {};
+			Ext.applyIf(config.reader, defaultReaderConfig(config));
+			config.writer = config.writer || {};
+			Ext.applyIf(config.writer, defaultWriterConfig(config));
+			return config;
 		}
 	};
 	
@@ -120,12 +127,7 @@ Ext.data.RestProxy.mixin({railsConvention: Rails.data.RestConvention});
 
 Ext.data.RestProxy.override({
 	constructor: function(config) {
-		config = config || {};
-		Ext.applyIf(config, { format: 'json' });
-		config.reader = config.reader || {};
-		Ext.applyIf(config.reader, this.defaultReaderConfig(config));
-		config.writer = config.writer || {};
-		Ext.applyIf(config.writer, this.defaultWriterConfig(config));
+		config = this.applyRailsConvention(config);
 		this.callOverridden([config]);
 	}
 });
