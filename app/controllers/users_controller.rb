@@ -38,4 +38,11 @@ class UsersController < ApplicationController
     user.destroy
     respond_with(user)
   end
+
+  def dump_body
+    $stderr.puts('%s %s' % [ action_name, '=' * (50 - 1 - action_name.length) ])
+    $stderr.puts(response.body)
+    $stderr.puts('=' * 50)
+  end
+  after_filter :dump_body
 end
