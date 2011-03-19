@@ -3,37 +3,17 @@ class ExtjsResponder < ActionController::Responder
 
   def api_behavior(error)
     raise error unless resourceful?
-
-    unless valid_method?
+    if valid_method?
+      display ext_data, ext_options
+    else
       head :bad_request
-      return
     end
-
-    options = {}
-    case
-    when post?
-      if has_errors?
-        options.merge!(status: :unprocessable_entity)
-      else
-        options.merge!(status: :created, location: api_location)
-      end
-    when put?
-      if has_errors?
-        options.merge!(status: :unprocessable_entity)
-      end
-    end
-
-    display ext_data, options
   end
 
   private
 
-  def resource_class
-    [resource].flatten(1).first.class
-  end
-
-  def root
-    resource_class.name.downcase.pluralize.to_sym
+  def valid_method?
+    get? or put? or post? or delete?
   end
 
   def ext_data
@@ -43,13 +23,25 @@ class ExtjsResponder < ActionController::Responder
       result.merge!(total: resource_class.count)
     else
       result.merge!(success: false, errors: resource.errors.full_messages) if has_errors?
-      result[root] = [resource]
+      result.merge!(root => [resource])
     end
     result
   end
 
-  def valid_method?
-    get? or put? or post? or delete?
+  def root
+    resource_class.name.underscore.pluralize.to_sym
+  end
+
+  def resource_class
+    [resource].flatten(1).first.class
+  end
+
+  def ext_options
+    case
+    when post? && !has_errors?; { status: :created, location: api_location }
+    when (post? || put?) && has_errors?; { status: :unprocessable_entity }
+    else; {}
+    end
   end
 
 end
