@@ -40,9 +40,8 @@ class UsersController < ApplicationController
   end
 
   def dump_body
-    $stderr.puts('%s %s' % [ action_name, '=' * (50 - 1 - action_name.length) ])
-    $stderr.puts(response.body)
-    $stderr.puts('=' * 50)
+    Rails.logger.debug('  Headers: ' + response.headers.inspect)
+    Rails.logger.debug('  Payload: ' + response.body)
   end
   after_filter :dump_body
 end
