@@ -1,14 +1,10 @@
-require 'extjs_responder'
-
 class UsersController < ApplicationController
 
-  respond_to :json
-  self.responder = ExtjsResponder
+  include Extjs::ControllerConvention
 
   # GET /users.json
   def index
-    order = (params[:sort] ? JSON.parse(params[:sort]) : []).map{|sort|'%{property} %{direction}' % sort.symbolize_keys}
-    users = User.order(order).offset(params[:start]).limit(params[:limit])
+    users = User.order(order_from_params).offset(params[:start]).limit(params[:limit])
     respond_with(users)
   end
 
