@@ -6,7 +6,7 @@ class ExtjsResponder < ActionController::Responder
     if valid_method?
       display ext_data, ext_options
     else
-      head :bad_request
+      head :method_not_allowed
     end
   end
 
