@@ -39,9 +39,9 @@ class UsersController < ApplicationController
     respond_with(user)
   end
 
-  def dump_body
+  def dump_response
     Rails.logger.debug('  Headers: ' + response.headers.inspect)
     Rails.logger.debug('  Payload: ' + response.body)
   end
-  after_filter :dump_body
+  after_filter :dump_response
 end
