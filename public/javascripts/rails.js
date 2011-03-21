@@ -13,8 +13,6 @@ Ext.apply(Rails, {
 	        type: 'rest',
 			url: '/' + Ext.util.Inflector.pluralize(baseName.toLowerCase())
 		});
-		Ext.applyIf(config, {
-		});
 		return Ext.regModel(name, config);
 	}
 });
