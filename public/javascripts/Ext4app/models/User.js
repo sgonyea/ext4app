@@ -7,5 +7,9 @@ Rails.regModel('Ext4app.models.User', {
     ],
 	proxy: {
 		url: '/users'
-	}
+	},
+	validations: [
+		{type: 'presence', field: 'name'},
+		{type: 'format', field: 'age', matcher: /^[0-9]+$/ }
+	]
 });
