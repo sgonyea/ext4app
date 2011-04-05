@@ -1,4 +1,16 @@
 GIT
+  remote: git://github.com/rack/rack.git
+  revision: ee1285f959eb77e450997676aee5026280d81bde
+  specs:
+    rack (1.2.1)
+
+GIT
+  remote: git://github.com/rails/arel.git
+  revision: e8563a6234b4f60f8d756d89b3b35026a467694e
+  specs:
+    arel (2.0.7.beta.20110228092631)
+
+GIT
   remote: git://github.com/rails/rails.git
   revision: 284ca810c17a89d15d809ba203289487044fcff9
   specs:
@@ -50,7 +62,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     ansi (1.2.2)
-    arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (3.0.0)
     configuration (1.2.0)
@@ -72,7 +83,6 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.16)
     polyglot (0.3.1)
-    rack (1.2.2)
     rack-cache (1.0)
       rack (>= 0.4)
     rack-mount (0.7.1)
@@ -101,8 +111,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  arel!
   faker
   heroku
+  rack!
   rails!
   rake (~> 0.9.0.beta.5)
   slim
