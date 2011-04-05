@@ -10,7 +10,27 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110301115803) do
+ActiveRecord::Schema.define(:version => 20110405131239) do
+
+  create_table "messages", :force => true do |t|
+    t.text     "body"
+    t.integer  "topic_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "messages", ["topic_id"], :name => "index_messages_on_topic_id"
+  add_index "messages", ["user_id"], :name => "index_messages_on_user_id"
+
+  create_table "topics", :force => true do |t|
+    t.string   "subject"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "topics", ["user_id"], :name => "index_topics_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
