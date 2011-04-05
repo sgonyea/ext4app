@@ -1,5 +1,5 @@
 source :rubygems
-gem 'rails', '>= 3.0.5'
+gem 'rails', git: 'git://github.com/rails/rails.git'
 group :development, :test do
   gem 'sqlite3'
 end
