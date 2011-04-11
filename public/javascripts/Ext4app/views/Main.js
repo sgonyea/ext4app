@@ -8,7 +8,7 @@ Ext.define('Ext4app.views.Main', {
             xtype: 'grid',
             store: Ext.getStore('ext4app.users'),
             title: 'Listing Users',
-            headers: [
+            columns: [
                 {text: 'Name', dataIndex: 'name', width: 380, sortable: true},
                 {text: 'Age', dataIndex: 'age', width: 40, align: 'right', sortable: true}
             ],
